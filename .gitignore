@@ -1,0 +1,9 @@
+__pycache__/
+.idea/
+.vscode/
+.venv314/
+_pip_tmp/
+Output/
+raw_images/
+X_images.npy
+X_images_upsampled.npy

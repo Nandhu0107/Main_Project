@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Traffic Congestion Prediction System</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<main class="page">
+<section class="hero">
+<p class="eyebrow">Traffic Vision</p>
+<h1>Upload a traffic image and inspect the prediction</h1>
+<p class="lead">The app predicts the class for the uploaded image, derives compact features directly from that image, builds a Grad-CAM heatmap for the image branch, and explains the prediction in plain text.</p>
+</section>
+
+<section class="panel">
+<form action="/analyze_image" method="post" enctype="multipart/form-data" class="upload-form">
+<label for="image_file" class="upload-label">Choose Image</label>
+<input id="image_file" type="file" name="image_file" accept=".jpg,.jpeg,.png,.bmp,.webp" required>
+<button type="submit">Analyze Image</button>
+</form>
+
+{% if upload_error %}
+<div class="error-box">{{ upload_error }}</div>
+{% endif %}
+</section>
+
+{% if analysis_result %}
+<section class="panel">
+<h2>Prediction</h2>
+<div class="summary-grid">
+<div class="summary-card">
+<span class="summary-label">Predicted Traffic State</span>
+<strong>{{ analysis_result.prediction }}</strong>
+</div>
+<div class="summary-card">
+<span class="summary-label">Confidence</span>
+<strong>{{ "%.2f"|format(analysis_result.prediction_confidence * 100) }}%</strong>
+</div>
+<div class="summary-card">
+<span class="summary-label">Congestion Level</span>
+<strong>{{ analysis_result.congestion_level }}</strong>
+</div>
+<div class="summary-card">
+<span class="summary-label">Emergency Confirmed</span>
+<strong>{{ analysis_result.emergency_detected }}</strong>
+</div>
+<div class="summary-card">
+<span class="summary-label">Recommended Action</span>
+<strong>{{ analysis_result.recommended_action }}</strong>
+</div>
+<div class="summary-card">
+<span class="summary-label">Priority</span>
+<strong>{{ analysis_result.priority }}</strong>
+</div>
+<div class="summary-card full-width">
+<span class="summary-label">Reason</span>
+<strong>{{ analysis_result.reason }}</strong>
+</div>
+<div class="summary-card full-width">
+<span class="summary-label">Reference Context</span>
+<strong>{{ analysis_result.reference_context }}</strong>
+</div>
+<div class="summary-card full-width">
+<span class="summary-label">Extracted Image Features</span>
+<strong>{{ analysis_result.image_feature_summary }}</strong>
+</div>
+<div class="summary-card full-width explainer-card">
+<span class="summary-label">Text Explainer</span>
+<p class="explanation-text">{{ analysis_result.text_explainer }}</p>
+</div>
+</div>
+
+</section>
+
+<section class="panel result-grid">
+<article class="result-card">
+<h2>Uploaded Image</h2>
+<img src="{{ analysis_result.uploaded_image_url }}" alt="Uploaded traffic image">
+</article>
+
+<article class="result-card">
+<h2>Grad-CAM Overlay</h2>
+<img src="{{ analysis_result.gradcam_overlay_url }}" alt="Grad-CAM overlay">
+</article>
+
+<article class="result-card">
+<h2>Grad-CAM Heatmap</h2>
+<img src="{{ analysis_result.gradcam_heatmap_url }}" alt="Grad-CAM heatmap">
+</article>
+
+<article class="result-card">
+<h2>Text-Based Explainer</h2>
+<p class="result-text">{{ analysis_result.shap_text_explainer }}</p>
+</article>
+</section>
+{% endif %}
+
+<section class="panel utility-panel">
+<div class="utility-actions">
+<form action="/run_system" method="post">
+<button type="submit" class="secondary-button">Run Main System</button>
+</form>
+
+<form action="/run_explain" method="post">
+<button type="submit" class="secondary-button">Run Explainable AI Script</button>
+</form>
+</div>
+
+{% if system_output %}
+<h3>Main System Output</h3>
+<pre>{{ system_output }}</pre>
+{% endif %}
+
+{% if explain_output %}
+<h3>Explainable AI Output</h3>
+<pre>{{ explain_output }}</pre>
+{% endif %}
+</section>
+</main>
+</body>
+</html>

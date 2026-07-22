@@ -1,0 +1,22 @@
+name: main_project
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10.19
+  - numpy=1.26.4
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - tensorflow
+  - flask
+  - tqdm
+  - asgiref
+  - uvicorn
+  - pip
+  - pip:
+      - opencv-python
+      - shap
+      - grad-cam
